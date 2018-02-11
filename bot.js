@@ -57,7 +57,7 @@ Client.login(Client.TOKEN);
         }
         else if(cmd == "sendsplit") {
             let splitmessagearr
-            if(args[3] == "spam##"){
+            if(args[3] != "spam##"){
                 splitmessagearr = args.slice(2,args.length);
             } else {
                 splitmessagearr = args.slice(3,args.length);
@@ -81,6 +81,18 @@ Client.login(Client.TOKEN);
                     msg.channel.send(splitmessage[i]);
                 }
             }
+        }
+        else if(cmd == "send") {
+            if(args[2] == "BIG") {
+                let outputmsg = args.slice(2,args.length);
+                outputmsg = outputmsg.split("");
+                let output = ""
+                for(i in outputmsg) {
+                    output = output.concat(":regional_indicator_" + outputmsg[i] +": ");
+                }
+                console.log(output);
+                msg.channel.send(output);
+            }
         } else {
             console.log("[Error]: Something went wrong");
             let promise = msg.channel.send("[Error]: something went wrong!");
@@ -90,7 +102,7 @@ Client.login(Client.TOKEN);
     }
 
     Client.log = function() {
-
+        //
     }
 
     function jlog(file, data) {
