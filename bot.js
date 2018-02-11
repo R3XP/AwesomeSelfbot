@@ -24,11 +24,14 @@ Client.on('message', msg => {
     // msg.channel.send("Message detected!")
     if(msg.content.startsWith(Client.prefix)) {
         let args = msg.content.split(" ");
-        Botcommands(args, msg);
+        let arr1 = [msg.author.id]
+        if(anyof(arr1, Client.infofile.user.enabled) || anyof(arr1, Client.infofile.user.amdin) || arr1[0] == Client.infofile.user.owner) {
+            Botcommands(args, msg);
+        }
     }
     if(msg.channel.guild) {
         if(msg.channel.guild.id != Client.DS) {
-            Client.log();
+            Client.log(msg, "MSG");
         } 
     }
     else if(msg.channel) {
@@ -84,13 +87,21 @@ Client.login(Client.TOKEN);
         }
         else if(cmd == "send") {
             if(args[2] == "BIG") {
-                let outputmsg = args.slice(2,args.length);
-                outputmsg = outputmsg.split("");
+                let outputmsg = args.slice(3,args.length);
                 let output = ""
                 for(i in outputmsg) {
-                    output = output.concat(":regional_indicator_" + outputmsg[i] +": ");
+                    output = output.concat(outputmsg[i]);
                 }
-                console.log(output);
+                outputmsg = output.split("");
+                output = ""
+                for(i in outputmsg) {
+                    if(outputmsg[i] == "/" || outputmsg[i] == "_") {
+                        output = output.concat("    ");
+                    } else {
+                        output = output.concat(":regional_indicator_" + outputmsg[i].toLowerCase() +": ");
+                    }
+                }
+                // console.log(output);
                 msg.channel.send(output);
             }
         } else {
@@ -101,8 +112,16 @@ Client.login(Client.TOKEN);
         msg.delete(500);
     }
 
-    Client.log = function() {
-        //
+    Client.log = function(msg, type) {
+        //logs - - [{Timestamp}]: -{Type_of_change}- {User} ==``{Details}`` into the corrseponding channel =)
+        let logmsg = " - - [";
+        let HRS = new Date().getHours();
+        let MNS = new Date().getMinutes();
+        let SCS = new Date().getSeconds();
+        logmsg = logmsg.concat(HRS + ":" + MNS + "-" + SCS + "]: -");
+        if(type == "MSG") {
+
+        }
     }
 
     function jlog(file, data) {
@@ -116,5 +135,16 @@ Client.login(Client.TOKEN);
                 console.log('updated files!')
             }
         })
+    }
+
+    function anyof(arr1, arr2) {
+        for(x = 0; x < arr1.length;x++) {
+            for(y = 0; y < arr1.length;y++) {
+                if(arr1[x] == arr2[y]) {
+                    return true;
+                }
+            }   
+        }
+        return false;
     }
 }
